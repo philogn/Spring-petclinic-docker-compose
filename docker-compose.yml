@@ -1,0 +1,26 @@
+services:
+  database:
+    image: mysql:8.4
+    ports:
+      - "3306:3306"
+    environment:
+      - MYSQL_ROOT_PASSWORD=
+      - MYSQL_ALLOW_EMPTY_PASSWORD=true
+      - MYSQL_USER=petclinic
+      - MYSQL_PASSWORD=petclinic
+      - MYSQL_DATABASE=petclinic
+    volumes:
+      - "./Data:/var/lib/mysql"
+  web:
+    build:
+      dockerfile: Dockerfile
+      context: ./
+    ports:
+      - 8888:8888
+    volumes:
+      - ./log/:/app/log/
+    depends_on:
+      - database
+    restart: on-failure
+    environment:
+      spring.datasource.url: "jdbc:mysql://database/petclinic"
